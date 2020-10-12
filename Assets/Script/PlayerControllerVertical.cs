@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerControllerVertical : MonoBehaviour
 {
@@ -153,6 +154,7 @@ public class PlayerControllerVertical : MonoBehaviour
     //敵との接触判定
     private void OnCollisionEnter(Collision collision)
     {
+        Debug.Log(collision.gameObject.tag);
         if (collision.collider.tag == "EnemyTag")
         {
             Debug.Log("敵と接触した");
@@ -161,9 +163,10 @@ public class PlayerControllerVertical : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        Debug.Log(other.gameObject.tag);
         if(other.gameObject.tag == "GameOverAreaTag")
         {
-            Debug.Log("ゲームオーバー");
+            GameObject.Find(StageController.STR).GetComponent<StageController>().GameOver();
         }
     }
 }
