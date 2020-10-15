@@ -60,9 +60,6 @@ public class PlayerControllerVertical : MonoBehaviour
                 animator.SetTrigger("JumpLanding");
             }
 
-            //ジャンプ上昇アニメーションも無効
-            animator.SetBool("JumpUp", false);
-
             //入力の長さが0.1より大きい時且つ、着地アニメーションが終わっている時
             if (input.magnitude > 0.1f && !animator.GetBool("JumpLanding"))
             {
@@ -78,8 +75,8 @@ public class PlayerControllerVertical : MonoBehaviour
                 animator.SetBool("Run", false);
             }
 
-            //ジャンプキーを押した時且つ、着地アニメーションが終わっている時
-            if (Input.GetKey(KeyCode.Space) && !animator.GetBool("JumpLanding"))
+            //ジャンプキーを押した時
+            if (Input.GetKey(KeyCode.Space))
             {
                 //ジャンプ開始アニメーションを再生
                 animator.SetTrigger("JumpStart");
@@ -133,7 +130,7 @@ public class PlayerControllerVertical : MonoBehaviour
 
             //ジャンプ上昇中であれば移動可能（本当は落下中も移動したい）
             //入力の長さが0.1より大きい時且つ、着地アニメーションが終わっている時
-            if (input.magnitude > 0.1f && !animator.GetBool("JumpLanding"))
+            if (input.magnitude > 0.1f)
             {
                 //入力した方向へ向かせる
                 transform.LookAt(transform.position + input.normalized);
