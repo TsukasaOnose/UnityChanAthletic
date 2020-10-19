@@ -18,8 +18,8 @@ public class ContinueCountScript : MonoBehaviour
         //ゲームマネージャーの中身がnullでない時
         if (GManager.instance != null)
         {
-            //テキストに残機を表示
-            continueText.text = "×" + GManager.instance.continueNum;
+            //GetContinueNum関数で残機数を取得し、テキストに残機を表示
+            continueText.text = "×" + GManager.instance.GetContinueNum();
         }
         //Gmanagerの中身がnullの時
         else
@@ -32,11 +32,13 @@ public class ContinueCountScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //GManagerで設定した残機と変わるたび、残機の表示を更新する
-        if(oldContinuetNum != GManager.instance.continueNum)
+        //GManagerで設定した残機と変わるたび
+        if(oldContinuetNum != GManager.instance.GetContinueNum())
         {
-            continueText.text = "×" + GManager.instance.continueNum;
-            oldContinuetNum = GManager.instance.continueNum;
+            //GetCountinueNum関数で残機数を取得し、残機の表示を更新する
+            continueText.text = "×" + GManager.instance.GetContinueNum();
+            //oldContinueNumを更新する
+            oldContinuetNum = GManager.instance.GetContinueNum();
         }
     }
 }

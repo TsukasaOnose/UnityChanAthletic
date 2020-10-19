@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System;
 
 public class StageController : MonoBehaviour
 {
@@ -24,11 +25,13 @@ public class StageController : MonoBehaviour
         this.gameOverUI = GameObject.Find("GameOverCanvas");
         //ゲームオーバー画面を非アクティブにする
         this.gameOverUI.SetActive(false);
-        //プレイヤーオブジェクトの座標にスタート地点の座標を代入する
-        if (playerObj != null && startPos != null)
-        {
-            playerObj.transform.position = startPos.transform.position;
-        }
+
+        StartPosition();
+    }
+
+    private void Update()
+    {
+        //
     }
 
     public void Retry()
@@ -37,22 +40,39 @@ public class StageController : MonoBehaviour
         SceneManager.LoadScene("Stage1");
     }
 
+    public void PlayerDown()
+    {
+        //残機が0なら
+        if (GManager.instance.GetContinueNum() == 0)
+        {
+            //GameOver関数を呼び出す
+            GameOver();
+        }
+        //まだ残機があるなら
+        else if (GManager.instance.GetContinueNum() > 0)
+        {
+            //プレイヤーの位置を初期地点に戻す
+            StartPosition();
+            //残機を1減らす
+            GManager.instance.MinusContinueNum();
+        }
+    }
+
+    public void StartPosition()
+    {
+        //プレイヤーオブジェクトの座標にスタート地点の座標を代入する
+        if (playerObj != null && startPos != null)
+        {
+            playerObj.transform.position = startPos.transform.position;
+        }
+    }
+
     public void GameOver()
     {
-        //残機がまだある時
-        if(GManager.instance.continueNum > 0)
         {
-            //スタートポジションに戻る
-            playerObj.transform.position = startPos.transform.position;
-            GManager.instance.continueNum -= 1;
-        }
-        //残機が0の時
-        if (GManager.instance.continueNum == 0)
-        {
-            //ゲームオーバーになった時、画面上にゲームオーバー画面を表示する
+            //ゲームオーバー(画面上にゲームオーバー画面を表示する)
             this.gameOverUI.SetActive(true);
             this.isGameOver = true;
-            Debug.Log("GameOver");
         }
     }
 }

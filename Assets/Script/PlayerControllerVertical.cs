@@ -19,11 +19,15 @@ public class PlayerControllerVertical : MonoBehaviour
     //ジャンプした時の高さ
     private float jumpPos;
     //ジャンプの高さ制限
-    public float jumpHeight = 2f;
+    [SerializeField] private float jumpHeight = 2f;
     //接地判定
     private bool isGround = false;
     //ジャンプ判定
     private bool isJump = false;
+    //初期地点の座標
+    Transform startPos;
+    //プレイヤーの現在地
+    Transform myTransform;
 
 
     // Start is called before the first frame update
@@ -33,11 +37,15 @@ public class PlayerControllerVertical : MonoBehaviour
         characterController = GetComponent<CharacterController>();
         //アニメーターを取得
         animator = GetComponent<Animator>();
+        startPos = this.transform;
     }
 
     // Update is called once per frame
     void Update()
     {
+        //現在地を取得
+        myTransform = this.transform;
+
         //接地判定の取得
         isGround = characterController.isGrounded;
 
@@ -160,10 +168,11 @@ public class PlayerControllerVertical : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log(other.gameObject.tag);
-        if(other.gameObject.tag == "GameOverAreaTag")
+        //ゲームオーバーエリアに落ちた時
+        if (other.gameObject.tag == "GameOverAreaTag")
         {
-            GameObject.Find(StageController.STR).GetComponent<StageController>().GameOver();
+            //ゲームオーバー関数を呼び出す
+            GameObject.Find(StageController.STR).GetComponent<StageController>().PlayerDown();
         }
     }
 }

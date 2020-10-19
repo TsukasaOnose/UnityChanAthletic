@@ -8,9 +8,9 @@ public class GManager : MonoBehaviour
     //GManagerを静的なものとして設定する
     public static GManager instance = null;
     //取得したイベントアイテムの数
-    public int eventItem;
+    private int eventItem;
     //コンティニュー数
-    public int continueNum;
+    [SerializeField ]private int continueNum;
 
     void Awake()
     {
@@ -19,7 +19,7 @@ public class GManager : MonoBehaviour
         {
             //インスタンスに自身を入れる(多分)
             instance = this;
-            //シーンがロードされた時もこのオブジェクトを破棄しない
+            //シーンがロードされた時もこのオブジェクトを破棄しない（今回のゲームでは必要ないけど一応）
             DontDestroyOnLoad(this.gameObject);
         }
         else
@@ -28,5 +28,17 @@ public class GManager : MonoBehaviour
             //開発中は必要
             Destroy(this.gameObject);
         }
+    }
+
+    //残機の数を返す関数
+    public  int GetContinueNum()
+    {
+        return continueNum;
+    }
+
+    //残機を減らす関数
+    public  void MinusContinueNum()
+    {
+        continueNum--;
     }
 }
