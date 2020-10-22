@@ -1,65 +1,72 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
-public class PlayerControllerVertical : MonoBehaviour
-{
-    //キャラクターコントローラーを入れる変数
-    private CharacterController characterController;
-    //アニメーターを入れる変数
+public class RigidPlayerController : MonoBehaviour
+{    
+    //リジッドボディ変数
+    private Rigidbody rigid;
+    //アニメーター変数
     private Animator animator;
 
     //動かす速度のベクトル
     private Vector3 velocity;
-    //走る速度
-    public float Speed = 5f;
     //ジャンプ力
-    public float jumpPower = 3f;
+    [SerializeField] private float jumpPower = 5f;
+
+    //入力値
+    private Vector3 input;
+    //走る速度
+    [SerializeField] private float RunSpeed = 5f;
+    //歩く速さ
+    [SerializeField] private float walkSpeed = 2f;
     //ジャンプした時の高さ
     private float jumpPos;
     //ジャンプの高さ制限
-    [SerializeField] private float jumpHeight = 2f;
+    [SerializeField] private float jumpHeight = 3f;
+    //Playerレイヤー以外のレイヤーマスク
+    int layerMask;
+    //グラウンドタグ
+    private string groundTag = "GroundTag";
+    //移動床タグ
+    private string moveFloorTag = "MoveFloorTag";
     //接地判定
     private bool isGround = false;
     //ジャンプ判定
     private bool isJump = false;
 
 
-    // Start is called before the first frame update
     void Start()
     {
-        //キャラクターコントローターを取得
-        characterController = GetComponent<CharacterController>();
         //アニメーターを取得
         animator = GetComponent<Animator>();
+        //リジッドボディを取得
+        rigid = GetComponent<Rigidbody>();
+        layerMask = ~(1 << LayerMask.NameToLayer("Player"));
     }
 
-    // Update is called once per frame
+
     void Update()
     {
-        //トリガーが戻らない事がある為、ジャンプ開始トリガーを毎フレームリセットする
-        if (animator.GetBool("JumpStart"))
+        //ジャンプ開始トリガーが戻らない事があるので、毎フレームリセット
+        if(animator.GetBool("JumpStart"))
         {
             animator.ResetTrigger("JumpStart");
         }
-        //接地判定の取得
-        isGround = characterController.isGrounded;
 
-        //左右の入力を取得する
-        Vector3 input = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical"));
+        //前後左右の入力を取得
+        input = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical"));
 
         //接地時
         if (isGround)
         {
-            //掛かっている速度をリセットする(しないとどっか飛んでく)
+            //接地しているので一度速度を0にする(しないとどっか飛んでく)
             velocity = Vector3.zero;
-            //ジャンプ落下アニメーションまたは上昇アニメーションが再生されていた時
-            if (animator.GetBool("JumpFall") || animator.GetBool("JumpUp"))
+            //ジャンプアニメーションが再生されていた時
+            if(animator.GetBool("JumpFall") || animator.GetBool("JumpUp"))
             {
-                //ジャンプ落下アニメーションを無効
+                //ジャンプ落下・上昇アニメーションを無効化
                 animator.SetBool("JumpFall", false);
-                //ジャンプ上昇アニメーションを無効
                 animator.SetBool("JumpUp", false);
                 //着地アニメーションを再生
                 animator.SetTrigger("JumpLanding");
@@ -73,20 +80,19 @@ public class PlayerControllerVertical : MonoBehaviour
                 //アニメーションのSpeedに入力の値を渡す
                 animator.SetBool("Run", true);
                 //移動する
-                velocity += transform.forward * Speed;
+                velocity += transform.forward * RunSpeed;
             }
             else
             {
                 animator.SetBool("Run", false);
             }
-
             //ジャンプキーを押した時
-            if (Input.GetKey(KeyCode.Space))
+            if (Input.GetKey(KeyCode.Space) && !animator.GetBool("JumpLanding"))
             {
                 //ジャンプ開始アニメーションを再生
                 animator.SetTrigger("JumpStart");
                 //上方向へジャンプ力を代入
-                velocity.y = jumpPower;
+                velocity.y += jumpPower;
                 //ジャンプした位置を記録
                 jumpPos = transform.position.y;
                 //ジャンプ判定を有効
@@ -97,29 +103,29 @@ public class PlayerControllerVertical : MonoBehaviour
             {
                 //ジャンプ上昇アニメーションは無効
                 animator.SetBool("JumpUp", false);
-                //ジャンプ判定を無効(ここでジャンプ判定を無効にしている為、
-                //ジャンプキーを押さずにただ落下している時に落下アニメーションが再生されない)
+                //ジャンプ判定を無効
                 isJump = false;
-                //上にかかる速度を0
-                velocity.y = 0f;
+                //上に掛かる速度を0
+                velocity.y = 0;
             }
         }
-        //ジャンプ判定時
+
+        //空中判定時
         else if (isJump)
         {
-            //掛かっている速度をリセットする(しないとどっか飛んでく)
+            //掛かっている速度をリセット(しないとどっか飛んでく)
             velocity = Vector3.zero;
-            //上方向を押している時
+            //ジャンプキーを押している判定
             bool pushJumpKey = Input.GetKey(KeyCode.Space);
-            //現在の高さがジャンプ可能な高さか
+            //現在の高さがジャンプ可能な高さかの判定
             bool canHeight = jumpPos + jumpHeight > transform.position.y;
 
-            //ジャンプキーを押している且つジャンプ可能な高さの時
+            //ジャンプキーを押している且つ、ジャンプ可能な高さの時
             if (pushJumpKey && canHeight)
             {
                 //ジャンプ上昇アニメーションを再生
                 animator.SetBool("JumpUp", true);
-                //上方向にジャンプ力を代入し続ける
+                //上方向にジャンプを代入し続ける
                 velocity.y = jumpPower;
             }
             //ジャンプキーを押していない、またはジャンプ可能高さにいない時
@@ -140,7 +146,7 @@ public class PlayerControllerVertical : MonoBehaviour
                 //入力した方向へ向かせる
                 transform.LookAt(transform.position + input.normalized);
                 //移動する
-                velocity += transform.forward * Speed;
+                velocity += transform.forward * RunSpeed;
             }
             else
             {
@@ -149,21 +155,40 @@ public class PlayerControllerVertical : MonoBehaviour
         }
         //重力を常にかける
         velocity.y += Physics.gravity.y * Time.deltaTime;
-        //CharacterControllerのMove関数にvelocityの値を渡し動かす
-        characterController.Move(velocity * Time.deltaTime);
     }
 
-    //敵との接触判定
-    private void OnCollisionEnter(Collision collision)
+    void FixedUpdate()
+    {
+        //キャラクターを移動させる処理
+        rigid.MovePosition(transform.position + velocity * Time.fixedDeltaTime);
+    }
+
+    void OnCollisionEnter(Collision collision)
     {
         Debug.Log(collision.gameObject.tag);
+        //接地したかどうかの判定
+        if (collision.collider.tag == groundTag || collision.collider.tag == moveFloorTag)
+        {
+            isGround = true;
+            velocity.y = 0;
+        }
+        //敵と接触した時
         if (collision.collider.tag == "EnemyTag")
         {
             Debug.Log("敵と接触した");
         }
     }
 
-    private void OnTriggerEnter(Collider other)
+    void OnCollisionExit(Collision collision)
+    {
+        //接地したかどうかの判定
+        if(collision.collider.tag == groundTag || collision.collider.tag == moveFloorTag)
+        {
+            isGround = false;
+        }
+    }
+
+    void OnTriggerEnter(Collider other)
     {
         //ゲームオーバーエリアに落ちた時
         if (other.gameObject.tag == "GameOverAreaTag")

@@ -10,6 +10,7 @@ TagManager:
   - FootTag
   - GameOverAreaTag
   - MoveFloorTag
+  - FootAreaTag
   layers:
   - Default
   - TransparentFX
@@ -19,9 +20,9 @@ TagManager:
   - UI
   - 
   - 
-  - 
-  - 
-  - 
+  - Player
+  - Field
+  - Enemy
   - 
   - 
   - 

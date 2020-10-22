@@ -52,7 +52,7 @@ public class StageController : MonoBehaviour
         else if (GManager.instance.GetContinueNum() > 0)
         {
             //プレイヤーの位置を初期地点に戻す
-            StartPosition();
+            Continue();
             //残機を1減らす
             GManager.instance.MinusContinueNum();
         }
@@ -67,11 +67,31 @@ public class StageController : MonoBehaviour
         }
     }
 
+    public void Continue()
+    {
+        //プレイヤーオブジェクトの座標にスタート地点の座標を代入する
+        if (playerObj != null && startPos != null)
+        {
+            playerObj.transform.position = startPos.transform.position;
+            //プレイヤーオブジェクトを非アクティブにする
+            playerObj.SetActive(false);
+            //一秒後にプレイヤーアクティブ関数を呼ぶ
+            Invoke("PlayerActive", 0.5f);
+        }
+    }
+
+    public void PlayerActive()
+    {
+        //プレイヤーをアクティブにする
+        playerObj.SetActive(true);
+    }
+
     public void GameOver()
     {
         {
             //ゲームオーバー(画面上にゲームオーバー画面を表示する)
             this.gameOverUI.SetActive(true);
+            //ゲームオーバー状態を有効にする
             this.isGameOver = true;
         }
     }

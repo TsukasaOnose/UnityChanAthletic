@@ -22,5 +22,6 @@ public class ClickButton : MonoBehaviour
     {
         //次のシーンを読み込む
         SceneManager.LoadScene("Stage1");
+
     }
 }

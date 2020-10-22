@@ -10,7 +10,7 @@ public class GManager : MonoBehaviour
     //取得したイベントアイテムの数
     private int eventItem;
     //コンティニュー数
-    [SerializeField ]private int continueNum;
+    [SerializeField] private int continueNum;
 
     void Awake()
     {
@@ -31,13 +31,13 @@ public class GManager : MonoBehaviour
     }
 
     //残機の数を返す関数
-    public  int GetContinueNum()
+    public int GetContinueNum()
     {
         return continueNum;
     }
 
     //残機を減らす関数
-    public  void MinusContinueNum()
+    public void MinusContinueNum()
     {
         continueNum--;
     }
