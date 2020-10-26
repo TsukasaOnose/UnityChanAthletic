@@ -13,6 +13,7 @@ public class GroundCheckScript : MonoBehaviour
     //地面に入った、入り続けている、出た時のフラグ
     private bool isGroundEnter, isGroundStay, isGroundExit;
 
+    //ステータスを宣言
     enum Status
     {
         Enter,
@@ -44,7 +45,7 @@ public class GroundCheckScript : MonoBehaviour
                 isGroundExit = false;
 
                 //地判定結果を返す
-                return isGround;*/
+                return isGround; */
 
         return status == Status.Enter || status == Status.Stay;
     }

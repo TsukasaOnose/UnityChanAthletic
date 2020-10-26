@@ -11,27 +11,38 @@ public class OnMoveFloorCheck : MonoBehaviour
     //移動床に入った、入り続けている、出た時のフラグ
     private bool onMoveFloorEnter, onMoveFloorStay, onMoveFloorExit;
 
+    enum Status
+    {
+        Enter,
+        Stay,
+        Exit
+    }
+
+    private Status status = Status.Enter;
+
     //移動床判定
     public bool OnMoveFloor()
     {
         //移動床搭乗判定
-        if (onMoveFloorEnter || onMoveFloorStay)
-        {
-            //移動床判定
-            onMoveFloor = true;
-        }
-        else if (onMoveFloorExit)
-        {
-            onMoveFloor = false;
-        }
+        /*        if (onMoveFloorEnter || onMoveFloorStay)
+                {
+                    //移動床判定
+                    onMoveFloor = true;
+                }
+                else if (onMoveFloorExit)
+                {
+                    onMoveFloor = false;
+                }
 
-        //各フラグは無効に戻す
-        onMoveFloorEnter = false;
-        onMoveFloorStay = false;
-        onMoveFloorExit = false;
+                //各フラグは無効に戻す
+                onMoveFloorEnter = false;
+                onMoveFloorStay = false;
+                onMoveFloorExit = false;
 
-        //移動床判定結果を返す
-        return onMoveFloor;
+                //移動床判定結果を返す
+                return onMoveFloor; */
+
+        return status == Status.Enter || status == Status.Stay;
     }
 
     //各種トリガーフラグを用意
@@ -41,7 +52,7 @@ public class OnMoveFloorCheck : MonoBehaviour
         Debug.Log(other.gameObject.tag);
         if (other.tag == moveFloorTag)
         {
-            onMoveFloorEnter = true;
+            status = Status.Enter;
         }
     }
 
@@ -49,7 +60,7 @@ public class OnMoveFloorCheck : MonoBehaviour
     {
         if (other.tag == moveFloorTag)
         {
-            onMoveFloorStay = true;
+            status = Status.Stay;
         }
     }
 
@@ -57,7 +68,7 @@ public class OnMoveFloorCheck : MonoBehaviour
     {
         if (other.tag == moveFloorTag)
         {
-            onMoveFloorExit = true;
+            status = Status.Exit;
         }
     }
 

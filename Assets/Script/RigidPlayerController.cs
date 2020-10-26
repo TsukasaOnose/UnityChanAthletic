@@ -23,12 +23,6 @@ public class RigidPlayerController : MonoBehaviour
     private float jumpPos;
     //ジャンプの高さ制限
     [SerializeField] private float jumpHeight = 3f;
-    //Playerレイヤー以外のレイヤーマスク
-    int layerMask;
-    //グラウンドタグ
-    private string groundTag = "GroundTag";
-    //移動床タグ
-    private string moveFloorTag = "MoveFloorTag";
     //接地判定
     private bool isGround = false;
     //ジャンプ判定
@@ -42,13 +36,11 @@ public class RigidPlayerController : MonoBehaviour
         animator = GetComponent<Animator>();
         //リジッドボディを取得
         rigid = GetComponent<Rigidbody>();
-        layerMask = ~(1 << LayerMask.NameToLayer("Player"));
     }
 
 
     void Update()
     {
-
         //クリア判定時、動きを止める
         if (GManager.instance.isCrea == true)
         {
@@ -56,7 +48,6 @@ public class RigidPlayerController : MonoBehaviour
         }
         else
         {
-
             //接地判定を取得
             isGround = ground.IsGround();
 
@@ -195,7 +186,6 @@ public class RigidPlayerController : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        Debug.Log(collision.gameObject.tag);
         //敵と接触した時
         if (collision.collider.tag == "EnemyTag")
         {
