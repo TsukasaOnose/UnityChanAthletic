@@ -13,6 +13,8 @@ public class StageController : MonoBehaviour
     public GameObject startPos;
     //オブジェクト"StageController"を宣言
     public static readonly string STR = "StageController";
+    //ゲームクリア画面
+    private GameObject gameCreaUI;
     //ゲームオーバー画面
     private GameObject gameOverUI;
     //ゲームオーバーの判定
@@ -21,8 +23,12 @@ public class StageController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //GameOverオブジェクトを取得
+        //GameCreaCanvasオブジェクトを取得
+        this.gameCreaUI = GameObject.Find("GameCreaCanvas");
+        //GameOverCanvasオブジェクトを取得
         this.gameOverUI = GameObject.Find("GameOverCanvas");
+        //ゲームクリア画面を非アクティブにする
+        this.gameCreaUI.SetActive(false);
         //ゲームオーバー画面を非アクティブにする
         this.gameOverUI.SetActive(false);
 
@@ -94,5 +100,11 @@ public class StageController : MonoBehaviour
             //ゲームオーバー状態を有効にする
             this.isGameOver = true;
         }
+    }
+
+    public void GameCrea()
+    {
+        //ゲームクリア画面を表示する
+        this.gameCreaUI.SetActive(true);
     }
 }

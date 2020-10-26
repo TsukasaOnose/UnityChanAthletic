@@ -4,19 +4,17 @@ using UnityEngine;
 
 public class MoveFloor2 : MonoBehaviour
 {
-    private Rigidbody rigid;
-    private Vector3 defaultPos;
-
-    // Start is called before the first frame update
-    void Start()
+    void OnCollisionStay(Collision col)
     {
-        rigid = GetComponent<Rigidbody>();
-        defaultPos = transform.position;
+        if (col.gameObject.tag == "MovingFloorTag")
+        {
+            transform.parent = col.gameObject.transform;
+            Debug.Log("parenting");
+        }
     }
-
-    // Update is called once per frame
-    void FixedUpdate()
+    void OnCollisionExit()
     {
-        rigid.MovePosition(new Vector3(defaultPos.x, defaultPos.y + Mathf.PingPong(Time.time, 2), defaultPos.z));
+        transform.parent = null;
+        Debug.Log("exit");
     }
 }

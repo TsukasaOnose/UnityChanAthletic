@@ -8,9 +8,11 @@ public class GManager : MonoBehaviour
     //GManagerを静的なものとして設定する
     public static GManager instance = null;
     //取得したイベントアイテムの数
-    private int eventItem;
+    [SerializeField] private int eventItem;
     //コンティニュー数
     [SerializeField] private int continueNum;
+    //クリア判定
+    public bool isCrea;
 
     void Awake()
     {
@@ -30,6 +32,18 @@ public class GManager : MonoBehaviour
         }
     }
 
+
+    private void Update()
+    {
+        if (eventItem == 3)
+        {
+            //ゲームクリアメソッドを呼び出す
+            GameObject.Find(StageController.STR).GetComponent<StageController>().GameCrea();
+            //クリア判定を有効にする
+            isCrea = true;
+        }
+    }
+
     //残機の数を返す関数
     public int GetContinueNum()
     {
@@ -40,5 +54,10 @@ public class GManager : MonoBehaviour
     public void MinusContinueNum()
     {
         continueNum--;
+    }
+
+    public void PlusEventItem()
+    {
+        eventItem++;
     }
 }

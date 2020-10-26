@@ -31,14 +31,21 @@ public class TimeScript : MonoBehaviour
         //分はマイナスにならない
         if (minute < 0) minute = 0;
         //秒数が0になるたび
-        if (seconds < 0f)
+        if (seconds <= 0f)
         {
-            //秒数を60に戻す
-            seconds += 60f;
-            //分を1減らす
-            minute--;
+            if (minute > 0)
+            {
+                //秒数を60に戻す
+                seconds += 60f;
+                //分を1減らす
+                minute--;
+            }
+            else
+            {
+                seconds = 0;
+            }
 
-            
+
             //時間が0になったら
             if (minute == 0 && seconds == 0)
             {
