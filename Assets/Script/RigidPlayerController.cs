@@ -63,6 +63,7 @@ public class RigidPlayerController : MonoBehaviour
             //接地時
             if (isGround)
             {
+                Debug.Log("接地しています");
                 //接地しているので一度速度を0にする(しないとどっか飛んでく)
                 velocity = Vector3.zero;
                 //ジャンプアニメーションが再生されていた時
@@ -76,7 +77,7 @@ public class RigidPlayerController : MonoBehaviour
                 }
 
                 //入力の長さが0.1より大きい時且つ、着地アニメーションが終わっている時
-                if (input.magnitude > 0.1f && !animator.GetBool("JumpLanding"))
+                if (input.magnitude > 0.1f)
                 {
                     //入力した方向へ向かせる
                     transform.LookAt(transform.position + input.normalized);
@@ -95,7 +96,7 @@ public class RigidPlayerController : MonoBehaviour
                     GetComponent<AudioSource>().volume = 0;
                 }
                 //ジャンプキーを押した時
-                if (Input.GetKey(KeyCode.Space) && !animator.GetBool("JumpLanding"))
+                if (Input.GetKey(KeyCode.Space))
                 {
                     //ジャンプ開始アニメーションを再生
                     animator.SetTrigger("JumpStart");
@@ -120,6 +121,7 @@ public class RigidPlayerController : MonoBehaviour
             //着地判定でない時
             else
             {
+                Debug.Log("接地していません");
                 //足音を無効化
                 GetComponent<AudioSource>().volume = 0;
                 //ジャンプ判定時
@@ -186,6 +188,7 @@ public class RigidPlayerController : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
+        Debug.Log(collision.gameObject.tag);
         //敵と接触した時
         if (collision.collider.tag == "EnemyTag")
         {

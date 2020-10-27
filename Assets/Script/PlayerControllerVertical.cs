@@ -24,6 +24,8 @@ public class PlayerControllerVertical : MonoBehaviour
     private bool isGround = false;
     //ジャンプ判定
     private bool isJump = false;
+    //GroundCheckScriptの変数
+    public GroundCheckScript ground;
 
 
     // Start is called before the first frame update
@@ -38,119 +40,132 @@ public class PlayerControllerVertical : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //トリガーが戻らない事がある為、ジャンプ開始トリガーを毎フレームリセットする
-        if (animator.GetBool("JumpStart"))
+        //クリア判定時、動きを止める
+        if (GManager.instance.isCrea == true)
         {
-            animator.ResetTrigger("JumpStart");
-        }
-        //接地判定の取得
-        isGround = characterController.isGrounded;
-
-        //左右の入力を取得する
-        Vector3 input = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical"));
-
-        //接地時
-        if (isGround)
-        {
-            //掛かっている速度をリセットする(しないとどっか飛んでく)
             velocity = Vector3.zero;
-            //ジャンプ落下アニメーションまたは上昇アニメーションが再生されていた時
-            if (animator.GetBool("JumpFall") || animator.GetBool("JumpUp"))
-            {
-                //ジャンプ落下アニメーションを無効
-                animator.SetBool("JumpFall", false);
-                //ジャンプ上昇アニメーションを無効
-                animator.SetBool("JumpUp", false);
-                //着地アニメーションを再生
-                animator.SetTrigger("JumpLanding");
-            }
-
-            //入力の長さが0.1より大きい時且つ、着地アニメーションが終わっている時
-            if (input.magnitude > 0.1f && !animator.GetBool("JumpLanding"))
-            {
-                //入力した方向へ向かせる
-                transform.LookAt(transform.position + input.normalized);
-                //アニメーションのSpeedに入力の値を渡す
-                animator.SetBool("Run", true);
-                //移動する
-                velocity += transform.forward * Speed;
-            }
-            else
-            {
-                animator.SetBool("Run", false);
-            }
-
-            //ジャンプキーを押した時
-            if (Input.GetKey(KeyCode.Space))
-            {
-                //ジャンプ開始アニメーションを再生
-                animator.SetTrigger("JumpStart");
-                //上方向へジャンプ力を代入
-                velocity.y = jumpPower;
-                //ジャンプした位置を記録
-                jumpPos = transform.position.y;
-                //ジャンプ判定を有効
-                isJump = true;
-            }
-            //スペースキーを離した時
-            else
-            {
-                //ジャンプ上昇アニメーションは無効
-                animator.SetBool("JumpUp", false);
-                //ジャンプ判定を無効(ここでジャンプ判定を無効にしている為、
-                //ジャンプキーを押さずにただ落下している時に落下アニメーションが再生されない)
-                isJump = false;
-                //上にかかる速度を0
-                velocity.y = 0f;
-            }
         }
-        //ジャンプ判定時
-        else if (isJump)
+        else
         {
-            //掛かっている速度をリセットする(しないとどっか飛んでく)
-            velocity = Vector3.zero;
-            //上方向を押している時
-            bool pushJumpKey = Input.GetKey(KeyCode.Space);
-            //現在の高さがジャンプ可能な高さか
-            bool canHeight = jumpPos + jumpHeight > transform.position.y;
+            //トリガーが戻らない事がある為、ジャンプ開始トリガーを毎フレームリセットする
+            if (animator.GetBool("JumpStart"))
+            {
+                animator.ResetTrigger("JumpStart");
+            }
+            //接地判定の取得
+            isGround = characterController.isGrounded;
 
-            //ジャンプキーを押している且つジャンプ可能な高さの時
-            if (pushJumpKey && canHeight)
-            {
-                //ジャンプ上昇アニメーションを再生
-                animator.SetBool("JumpUp", true);
-                //上方向にジャンプ力を代入し続ける
-                velocity.y = jumpPower;
-            }
-            //ジャンプキーを押していない、またはジャンプ可能高さにいない時
-            else if (!pushJumpKey || !canHeight)
-            {
-                //ジャンプ上昇アニメーションを無効
-                animator.SetBool("JumpUp", false);
-                //ジャンプ落下アニメーションを再生
-                animator.SetBool("JumpFall", true);
-                //ジャンプ判定を無効
-                isJump = false;
-            }
+            //左右の入力を取得する
+            Vector3 input = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical"));
 
-            //ジャンプ上昇中であれば移動可能（本当は落下中も移動したい）
-            //入力の長さが0.1より大きい時且つ、着地アニメーションが終わっている時
-            if (input.magnitude > 0.1f)
+            //接地時
+            if (isGround)
             {
-                //入力した方向へ向かせる
-                transform.LookAt(transform.position + input.normalized);
-                //移動する
-                velocity += transform.forward * Speed;
+                Debug.Log("接地しています");
+                //掛かっている速度をリセットする(しないとどっか飛んでく)
+                velocity = Vector3.zero;
+                //ジャンプ落下アニメーションまたは上昇アニメーションが再生されていた時
+                if (animator.GetBool("JumpFall") || animator.GetBool("JumpUp"))
+                {
+                    //ジャンプ落下アニメーションを無効
+                    animator.SetBool("JumpFall", false);
+                    //ジャンプ上昇アニメーションを無効
+                    animator.SetBool("JumpUp", false);
+                    //着地アニメーションを再生
+                    animator.SetTrigger("JumpLanding");
+                }
+
+                //入力の長さが0.1より大きい時且つ、着地アニメーションが終わっている時
+                if (input.magnitude > 0.1f && !animator.GetBool("JumpLanding"))
+                {
+                    //入力した方向へ向かせる
+                    transform.LookAt(transform.position + input.normalized);
+                    //アニメーションのSpeedに入力の値を渡す
+                    animator.SetBool("Run", true);
+                    //移動する
+                    velocity += transform.forward * Speed;
+                }
+                else
+                {
+                    animator.SetBool("Run", false);
+                }
+
+                //ジャンプキーを押した時
+                if (Input.GetKey(KeyCode.Space))
+                {
+                    //ジャンプ開始アニメーションを再生
+                    animator.SetTrigger("JumpStart");
+                    //上方向へジャンプ力を代入
+                    velocity.y = jumpPower;
+                    //ジャンプした位置を記録
+                    jumpPos = transform.position.y;
+                    //ジャンプ判定を有効
+                    isJump = true;
+                }
+                //スペースキーを離した時
+                else
+                {
+                    //ジャンプ上昇アニメーションは無効
+                    animator.SetBool("JumpUp", false);
+                    //ジャンプ判定を無効(ここでジャンプ判定を無効にしている為、
+                    //ジャンプキーを押さずにただ落下している時に落下アニメーションが再生されない)
+                    isJump = false;
+                    //上にかかる速度を0
+                    velocity.y = 0f;
+                }
             }
+            //ジャンプ判定時
             else
             {
-                velocity += transform.forward * 0f;
+                Debug.Log("接地していません");
+                if (isJump)
+                {
+                    //掛かっている速度をリセットする(しないとどっか飛んでく)
+                    velocity = Vector3.zero;
+                    //上方向を押している時
+                    bool pushJumpKey = Input.GetKey(KeyCode.Space);
+                    //現在の高さがジャンプ可能な高さか
+                    bool canHeight = jumpPos + jumpHeight > transform.position.y;
+
+                    //ジャンプキーを押している且つジャンプ可能な高さの時
+                    if (pushJumpKey && canHeight)
+                    {
+                        //ジャンプ上昇アニメーションを再生
+                        animator.SetBool("JumpUp", true);
+                        //上方向にジャンプ力を代入し続ける
+                        velocity.y = jumpPower;
+                    }
+                    //ジャンプキーを押していない、またはジャンプ可能高さにいない時
+                    else if (!pushJumpKey || !canHeight)
+                    {
+                        //ジャンプ上昇アニメーションを無効
+                        animator.SetBool("JumpUp", false);
+                        //ジャンプ落下アニメーションを再生
+                        animator.SetBool("JumpFall", true);
+                        //ジャンプ判定を無効
+                        isJump = false;
+                    }
+
+                    //ジャンプ上昇中であれば移動可能（本当は落下中も移動したい）
+                    //入力の長さが0.1より大きい時且つ、着地アニメーションが終わっている時
+                    if (input.magnitude > 0.1f)
+                    {
+                        //入力した方向へ向かせる
+                        transform.LookAt(transform.position + input.normalized);
+                        //移動する
+                        velocity += transform.forward * Speed;
+                    }
+                    else
+                    {
+                        velocity += transform.forward * 0f;
+                    }
+                }
             }
+            //重力を常にかける
+            velocity.y += Physics.gravity.y * Time.deltaTime;
+            //CharacterControllerのMove関数にvelocityの値を渡し動かす
+            characterController.Move(velocity * Time.deltaTime);
         }
-        //重力を常にかける
-        velocity.y += Physics.gravity.y * Time.deltaTime;
-        //CharacterControllerのMove関数にvelocityの値を渡し動かす
-        characterController.Move(velocity * Time.deltaTime);
     }
 
     //敵との接触判定
@@ -170,6 +185,12 @@ public class PlayerControllerVertical : MonoBehaviour
         {
             //ゲームオーバー関数を呼び出す
             GameObject.Find(StageController.STR).GetComponent<StageController>().PlayerDown();
+        }
+        //イベントアイテムに衝突した時
+        if (other.gameObject.tag == "EventItemTag")
+        {
+            //パーティクルを再生
+            GetComponent<ParticleSystem>().Play();
         }
     }
 }

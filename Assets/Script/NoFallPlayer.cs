@@ -7,19 +7,23 @@ public class NoFallPlayer : MonoBehaviour
     //プレイヤーのオブジェクトの変数
     public GameObject playerObj;
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider other)
     {
         //移動床にぶつかった時
-        if (collision.gameObject.tag == "MoveFloorTag")
+        if (other.gameObject.tag == "MoveFloorTag")
+        {
+            Debug.Log("移動床の上です");
             //移動床をPlayerの親にセットする
-            playerObj.transform.SetParent(collision.transform);
+            playerObj.transform.SetParent(other.transform);
+        }
     }
 
-    void OnCollisionExit(Collision collision)
+    private void OnTriggerExit(Collider other)
     {
         //移動床と離れた時
-        if (collision.gameObject.tag == "MoveFloorTag")
+        if (other.gameObject.tag == "MoveFloorTag")
         {
+            Debug.Log("移動床から降りました");
             //移動床をPlayerの親から外す
             playerObj.transform.SetParent(null);
         }
