@@ -12,6 +12,7 @@ TagManager:
   - MoveFloorTag
   - FootAreaTag
   - EventItemTag
+  - GroundCheckTag
   layers:
   - Default
   - TransparentFX
