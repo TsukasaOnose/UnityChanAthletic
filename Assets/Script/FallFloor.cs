@@ -23,7 +23,7 @@ public class FallFloor : MonoBehaviour
         startPos = this.gameObject.transform.position;
     }
 
-    private void Update()
+/*    private void Update()
     {
         //復元された時
         if(isRestor == true)
@@ -60,7 +60,7 @@ public class FallFloor : MonoBehaviour
                 restorTime += Time.deltaTime;
             }
         }
-    }
+    }*/
 
     private void OnTriggerEnter(Collider other)
     {
@@ -91,7 +91,38 @@ public class FallFloor : MonoBehaviour
         this.gameObject.transform.position = startPos;
         //isKinematicを有効化
         GetComponent<Rigidbody>().isKinematic = true;
-        //復元された判定
-        isRestor = true;
+        StartCoroutine(Proc());
+    }
+
+    //点滅させるコルーチン処理
+    private IEnumerator Proc()
+    {
+        //復元してからの時間が1未満の時
+        while(restorTime < 1)
+        {
+            //明滅　ついている時に戻る
+            if (blinkTime > 0.2f)
+            {
+                //レンダラーを有効化
+                rd.enabled = true;
+                blinkTime = 0.0f;
+            }
+            //明滅　消えているとき
+            else if (blinkTime > 0.1f)
+            {
+                rd.enabled = false;
+            }
+            //明滅　ついている時
+            else
+            {
+                rd.enabled = true;
+            }
+            blinkTime += Time.deltaTime;
+            restorTime += Time.deltaTime;
+            yield return null;
+        }
+        blinkTime = 0f;
+        restorTime = 0f;
+        rd.enabled = true;
     }
 }
