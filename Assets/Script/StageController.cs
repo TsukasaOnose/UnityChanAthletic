@@ -19,6 +19,8 @@ public class StageController : MonoBehaviour
     private GameObject gameOverUI;
     //ゲームオーバーの判定
     private bool isGameOver = false;
+    //タイムアップのテキスト
+    private GameObject timeUpText;
 
     // Start is called before the first frame update
     void Start()
@@ -31,6 +33,8 @@ public class StageController : MonoBehaviour
         this.gameCreaUI.SetActive(false);
         //ゲームオーバー画面を非アクティブにする
         this.gameOverUI.SetActive(false);
+        //タイムアップテキストを取得
+        this.timeUpText = GameObject.Find("TimeUpText");
 
         StartPosition();
     }
@@ -92,9 +96,17 @@ public class StageController : MonoBehaviour
         playerObj.SetActive(true);
     }
 
+    public void TimeUp()
+    {
+        //タイムアップと表示するスクリプト
+        this.timeUpText.GetComponent<Text>().text = "TIME UP!!";
+    }
+
     public void GameOver()
     {
         {
+            //タイムアップテキストを破棄
+            Destroy(timeUpText);
             //ゲームオーバー(画面上にゲームオーバー画面を表示する)
             this.gameOverUI.SetActive(true);
             //ゲームオーバー状態を有効にする

@@ -6,20 +6,17 @@ using UnityEngine.UI;
 public class TimeScript : MonoBehaviour
 {
     //分
-    public int minute;
+    public int minute = 10;
     //秒
-    public float seconds;
+    public float seconds = 0;
     //変わる前の秒数
-    private float oldSeconds;
+    private float oldSeconds = 0;
     //時間を表示するテキスト
     private Text timeText;
 
     // Start is called before the first frame update
     void Start()
     {
-        minute = 1;
-        seconds = 5;
-        oldSeconds = 0;
         timeText = GetComponent<Text>();
     }
 
@@ -49,8 +46,9 @@ public class TimeScript : MonoBehaviour
             //時間が0になったら
             if (minute == 0 && seconds == 0)
             {
-                //ゲームオーバー関数を呼び出す
-                GameObject.Find(StageController.STR).GetComponent<StageController>().GameOver();
+
+                //タイムアップ関数を呼び出す
+                GameObject.Find(StageController.STR).GetComponent<StageController>().TimeUp();
             }
         }
 

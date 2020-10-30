@@ -46,7 +46,6 @@ public class GroundCheckScript : MonoBehaviour
 
                 //地判定結果を返す
                 return isGround; */
-
         return status == Status.Enter || status == Status.Stay;
     }
 
@@ -55,6 +54,7 @@ public class GroundCheckScript : MonoBehaviour
     {
         //侵入したタグをコンソールに表示
         Debug.Log(other.gameObject.tag);
+        Debug.Log("接地した");
         if (other.tag == groundTag || other.tag == moveFloorTag)
         {
             status = Status.Enter;
@@ -63,6 +63,7 @@ public class GroundCheckScript : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
+        Debug.Log("接地中");
         if (other.tag == groundTag || other.tag == moveFloorTag)
         {
             status = Status.Stay;

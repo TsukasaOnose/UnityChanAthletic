@@ -45,13 +45,9 @@ public class PlayerControllerVertical : MonoBehaviour
         {
             velocity = Vector3.zero;
         }
+
         else
         {
-            //トリガーが戻らない事がある為、ジャンプ開始トリガーを毎フレームリセットする
-            if (animator.GetBool("JumpStart"))
-            {
-                animator.ResetTrigger("JumpStart");
-            }
             //接地判定の取得
             isGround = characterController.isGrounded;
 
@@ -65,12 +61,13 @@ public class PlayerControllerVertical : MonoBehaviour
                 //掛かっている速度をリセットする(しないとどっか飛んでく)
                 velocity = Vector3.zero;
                 //ジャンプ落下アニメーションまたは上昇アニメーションが再生されていた時
-                if (animator.GetBool("JumpFall") || animator.GetBool("JumpUp"))
+                if (animator.GetBool("JumpFall") || animator.GetBool("JumpUp") || animator.GetBool("JumpStart"))
                 {
                     //ジャンプ落下アニメーションを無効
                     animator.SetBool("JumpFall", false);
                     //ジャンプ上昇アニメーションを無効
                     animator.SetBool("JumpUp", false);
+                    animator.ResetTrigger("JumpStart");
                     //着地アニメーションを再生
                     animator.SetTrigger("JumpLanding");
                 }
@@ -91,7 +88,7 @@ public class PlayerControllerVertical : MonoBehaviour
                 }
 
                 //ジャンプキーを押した時
-                if (Input.GetKey(KeyCode.Space))
+                if (Input.GetKey(KeyCode.Space) && !animator.GetBool("JumpLanding"))
                 {
                     //ジャンプ開始アニメーションを再生
                     animator.SetTrigger("JumpStart");
