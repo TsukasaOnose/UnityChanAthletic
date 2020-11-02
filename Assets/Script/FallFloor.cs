@@ -68,7 +68,7 @@ public class FallFloor : MonoBehaviour
         if (other.gameObject.CompareTag("GroundCheckTag"))
         {
             //1秒後にFall関数を呼ぶ
-            Invoke("Fall", 0.7f);
+            Invoke("Fall", 0.5f);
         }
 
         //ゲームオーバーエリアと接触した時
@@ -121,6 +121,7 @@ public class FallFloor : MonoBehaviour
             restorTime += Time.deltaTime;
             yield return null;
         }
+        //リセットして終わる
         blinkTime = 0f;
         restorTime = 0f;
         rd.enabled = true;

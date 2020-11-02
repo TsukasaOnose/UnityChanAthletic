@@ -8,9 +8,9 @@ public class GManager : MonoBehaviour
     //GManagerを静的なものとして設定する
     public static GManager instance = null;
     //取得したイベントアイテムの数
-    [SerializeField] private int eventItem;
+    [SerializeField] private int eventItem = 0;
     //コンティニュー数
-    [SerializeField] private int continueNum;
+    [SerializeField] private int continueNum = 10;
     //クリア判定
     public bool isCrea;
 

@@ -29,6 +29,7 @@ public class RigidPlayerController : MonoBehaviour
     private bool isJump = false;
     //GroundCheckScriptの変数
     public GroundCheckScript ground;
+    //操作可能になるまでの時間
     private float timeToEnableInputs;
 
     void Start()
@@ -72,51 +73,41 @@ public class RigidPlayerController : MonoBehaviour
                     animator.SetBool("JumpUp", false);
                     //着地アニメーションを再生
                     animator.SetTrigger("JumpLanding");
-                    //行動可能時間を、着地してから0.1 秒後に設定
-                    this.timeToEnableInputs = Time.time + 0.1f;
+                    //行動可能時間を、着地してから0.2 秒後に設定
+                    this.timeToEnableInputs = Time.time + 0.2f;
                 }
 
-                    //入力の長さが0.1より大きい時且つ、着地アニメーションが終わっている時
-                    if (input.magnitude > 0.1f && Time.time >= timeToEnableInputs)
-                    {
-                        //入力した方向へ向かせる
-                        transform.LookAt(transform.position + input.normalized);
-                        //アニメーションのSpeedに入力の値を渡す
-                        animator.SetBool("Run", true);
-                        //移動する
-                        velocity += transform.forward * RunSpeed;
-                        //足音を有効化
-                        GetComponent<AudioSource>().volume = 1;
-                    }
-                    else
-                    {
-                        //走りアニメーションを無効化
-                        animator.SetBool("Run", false);
-                        //足音を無効化
-                        GetComponent<AudioSource>().volume = 0;
-                    }
-                    //ジャンプキーを押した時
-                    if (Input.GetKey(KeyCode.Space) && Time.time >= timeToEnableInputs)
-                    {
-                        //ジャンプ開始アニメーションを再生
-                        animator.SetTrigger("JumpStart");
-                        //上方向へジャンプ力を代入
-                        velocity.y += jumpPower;
-                        //ジャンプした位置を記録
-                        jumpPos = transform.position.y;
-                        //ジャンプ判定を有効
-                        isJump = true;
-                    }
-                    //スペースキーを離した時
-                    else
-                    {
-                        //ジャンプ上昇アニメーションは無効
-                        animator.SetBool("JumpUp", false);
-                        //ジャンプ判定を無効
-                        isJump = false;
-                        //上に掛かる速度を0
-                        velocity.y = 0;
-                    }
+                //入力の長さが0.1より大きい時且つ、行動可能時間になっている時
+                if (input.magnitude > 0.1f && Time.time >= timeToEnableInputs)
+                {
+                    //入力した方向へ向かせる
+                    transform.LookAt(transform.position + input.normalized);
+                    //アニメーションのSpeedに入力の値を渡す
+                    animator.SetBool("Run", true);
+                    //移動する
+                    velocity += transform.forward * RunSpeed;
+                    //足音を有効化
+                    GetComponent<AudioSource>().volume = 1;
+                }
+                else
+                {
+                    //走りアニメーションを無効化
+                    animator.SetBool("Run", false);
+                    //足音を無効化
+                    GetComponent<AudioSource>().volume = 0;
+                }
+                //ジャンプキーを押した時
+                if (Input.GetKey(KeyCode.Space) && Time.time >= timeToEnableInputs)
+                {
+                    //ジャンプ開始アニメーションを再生
+                    animator.SetTrigger("JumpStart");
+                    //上方向へジャンプ力を代入
+                    velocity.y += jumpPower;
+                    //ジャンプした位置を記録
+                    jumpPos = transform.position.y;
+                    //ジャンプ判定を有効
+                    isJump = true;
+                }
             }
             //着地判定でない時
             else
@@ -135,7 +126,7 @@ public class RigidPlayerController : MonoBehaviour
                     bool canHeight = jumpPos + jumpHeight > transform.position.y;
 
                     //ジャンプキーを押している且つ、ジャンプ可能な高さの時
-                    if (pushJumpKey && canHeight)
+                    if (pushJumpKey && canHeight && !animator.GetBool("JumpLanding"))
                     {
                         //ジャンプ上昇アニメーションを再生
                         animator.SetBool("JumpUp", true);
@@ -182,7 +173,7 @@ public class RigidPlayerController : MonoBehaviour
     void FixedUpdate()
     {
         //キャラクターを移動させる処理
-        rigid.MovePosition(transform.position + velocity * Time.fixedDeltaTime);
+        rigid.velocity = velocity;
     }
 
     void OnTriggerEnter(Collider other)

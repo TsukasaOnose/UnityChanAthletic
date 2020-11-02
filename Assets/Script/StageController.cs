@@ -111,6 +111,7 @@ public class StageController : MonoBehaviour
             this.gameOverUI.SetActive(true);
             //ゲームオーバー状態を有効にする
             this.isGameOver = true;
+            Time.timeScale = 0;
         }
     }
 
