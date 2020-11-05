@@ -13,22 +13,16 @@ public class StageController : MonoBehaviour
     public GameObject startPos;
     //オブジェクト"StageController"を宣言
     public static readonly string STR = "StageController";
-    //ゲームクリア画面
-    private GameObject gameCreaUI;
-    //ゲームオーバー画面
-    private GameObject gameOverUI;
-    //ゲームオーバーの判定
-    private bool isGameOver = false;
+    //ゲームクリア画面(GameCreaCanvas)
+    public GameObject gameCreaUI;
+    //ゲームオーバー画面(GameOverCanvas)
+    public GameObject gameOverUI;
     //タイムアップのテキスト
     private GameObject timeUpText;
 
     // Start is called before the first frame update
     void Start()
     {
-        //GameCreaCanvasオブジェクトを取得
-        this.gameCreaUI = GameObject.Find("GameCreaCanvas");
-        //GameOverCanvasオブジェクトを取得
-        this.gameOverUI = GameObject.Find("GameOverCanvas");
         //ゲームクリア画面を非アクティブにする
         this.gameCreaUI.SetActive(false);
         //ゲームオーバー画面を非アクティブにする
@@ -48,6 +42,12 @@ public class StageController : MonoBehaviour
     {
         //ステージ1のシーンをロードする
         SceneManager.LoadScene("Stage1");
+    }
+
+    public void TitleBack()
+    {
+        //タイトルのシーンをロードする
+        SceneManager.LoadScene("Title");
     }
 
     public void PlayerDown()
@@ -109,15 +109,16 @@ public class StageController : MonoBehaviour
             Destroy(timeUpText);
             //ゲームオーバー(画面上にゲームオーバー画面を表示する)
             this.gameOverUI.SetActive(true);
-            //ゲームオーバー状態を有効にする
-            this.isGameOver = true;
             Time.timeScale = 0;
         }
     }
 
     public void GameCrea()
     {
-        //ゲームクリア画面を表示する
-        this.gameCreaUI.SetActive(true);
+        if (this.gameCreaUI != null)
+        {
+            //ゲームクリア画面を表示する
+            this.gameCreaUI.SetActive(true);
+        }
     }
 }

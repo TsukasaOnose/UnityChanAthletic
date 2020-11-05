@@ -6,17 +6,20 @@ using UnityEngine.UI;
 public class TimeScript : MonoBehaviour
 {
     //分
-    public int minute = 10;
+    public int minute;
     //秒
-    public float seconds = 0;
+    public float seconds;
     //変わる前の秒数
-    private float oldSeconds = 0;
+    private float oldSeconds;
     //時間を表示するテキスト
     private Text timeText;
 
     // Start is called before the first frame update
     void Start()
     {
+        minute = 10;
+        seconds = 0;
+        oldSeconds = 0;
         timeText = GetComponent<Text>();
     }
 

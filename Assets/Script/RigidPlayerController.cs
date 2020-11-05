@@ -31,6 +31,10 @@ public class RigidPlayerController : MonoBehaviour
     public GroundCheckScript ground;
     //操作可能になるまでの時間
     private float timeToEnableInputs;
+    //AudioSource
+    public AudioSource audioSource;
+    //効果音の配列
+    public AudioClip[] se;
 
     void Start()
     {
@@ -86,15 +90,12 @@ public class RigidPlayerController : MonoBehaviour
                     animator.SetBool("Run", true);
                     //移動する
                     velocity += transform.forward * RunSpeed;
-                    //足音を有効化
-                    GetComponent<AudioSource>().volume = 1;
+
                 }
                 else
                 {
                     //走りアニメーションを無効化
                     animator.SetBool("Run", false);
-                    //足音を無効化
-                    GetComponent<AudioSource>().volume = 0;
                 }
                 //ジャンプキーを押した時
                 if (Input.GetKey(KeyCode.Space) && Time.time >= timeToEnableInputs)
@@ -113,8 +114,7 @@ public class RigidPlayerController : MonoBehaviour
             else
             {
                 Debug.Log("接地していません");
-                //足音を無効化
-                GetComponent<AudioSource>().volume = 0;
+
                 //ジャンプ判定時
                 if (isJump)
                 {
@@ -159,10 +159,11 @@ public class RigidPlayerController : MonoBehaviour
                     }
                 }
                 //ジャンプ判定でも着地判定でもない時(走っていて落ちた時)
-                else
+                else if(!isJump && !isGround)
                 {
-                    //足音を無効化
-                    GetComponent<AudioSource>().volume = 0;
+                    //着地時に跳ねてしまい条件を満たしてしまうので、上手く挙動しない
+                    //落下アニメーション
+//                    animator.SetBool("JumpFall", true);
                 }
             }
             //重力を常にかける
@@ -188,8 +189,21 @@ public class RigidPlayerController : MonoBehaviour
         //イベントアイテムに衝突した時
         if (other.gameObject.tag == "EventItemTag")
         {
+            //アイテム取得音を鳴らす
+            audioSource.PlayOneShot(se[1], 0.1f);
             //パーティクルを再生
             GetComponent<ParticleSystem>().Play();
+        }
+    }
+
+    //足音を鳴らす関数(Animator Eventに受け渡す)
+    public void  FootStepSE()
+    {
+        Debug.Log("歩いた");
+        if (isGround)
+        {
+            ///足音を鳴らす
+            audioSource.PlayOneShot(se[0], 0.8f);
         }
     }
 }

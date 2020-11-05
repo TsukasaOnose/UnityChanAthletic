@@ -8,9 +8,9 @@ public class GManager : MonoBehaviour
     //GManagerを静的なものとして設定する
     public static GManager instance = null;
     //取得したイベントアイテムの数
-    [SerializeField] private int eventItem = 0;
+    [SerializeField] private int eventItem;
     //コンティニュー数
-    [SerializeField] private int continueNum = 10;
+    [SerializeField] private int continueNum;
     //クリア判定
     public bool isCrea;
 
@@ -21,8 +21,6 @@ public class GManager : MonoBehaviour
         {
             //インスタンスに自身を入れる(多分)
             instance = this;
-            //シーンがロードされた時もこのオブジェクトを破棄しない（今回のゲームでは必要ないけど一応）
-            DontDestroyOnLoad(this.gameObject);
         }
         else
         {
@@ -32,15 +30,24 @@ public class GManager : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        eventItem = 0;
+        continueNum = 7;
+        isCrea = false;
+    }
 
     private void Update()
     {
         if (eventItem == 3)
         {
-            //ゲームクリアメソッドを呼び出す
-            GameObject.Find(StageController.STR).GetComponent<StageController>().GameCrea();
             //クリア判定を有効にする
             isCrea = true;
+        }
+        if(isCrea)
+        {
+            //ゲームクリアメソッドを呼び出す
+            GameObject.Find(StageController.STR).GetComponent<StageController>().GameCrea();
         }
     }
 
@@ -59,5 +66,6 @@ public class GManager : MonoBehaviour
     public void PlusEventItem()
     {
         eventItem++;
+        continueNum++;
     }
 }
