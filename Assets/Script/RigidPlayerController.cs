@@ -203,7 +203,7 @@ public class RigidPlayerController : MonoBehaviour
         if (isGround)
         {
             ///足音を鳴らす
-            audioSource.PlayOneShot(se[0], 0.8f);
+            audioSource.PlayOneShot(se[0], 1f);
         }
     }
 }

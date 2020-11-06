@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2432353014314323758}
   - component: {fileID: 2432353014314323757}
   m_Layer: 0
-  m_Name: GameManager
+  m_Name: GameManagerPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -43,3 +43,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e68c975ffd56ca14ca86e193189a3cb4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  eventItem: 0
+  continueNum: 0
+  isCrea: 0
